@@ -53,6 +53,7 @@ def word_count(filename):
       words[word] += 1
     else:
       words[word] = 1
+  f.close()
   return words
 
 def print_words(filename):
