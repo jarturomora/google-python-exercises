@@ -61,6 +61,23 @@ def print_words(filename):
   for key, value in sorted(words.items()):
     print key, '>', value
 
+def print_top(filename):
+  words = word_count(filename)
+  top_limit = len(words)
+  if top_limit > 20:
+    top_limit = 20
+  # Switch values for keys
+  top_dict = {}
+  for key, value in words.items():
+    top_dict[value] = key
+  # Print top 20 words ordered by word count
+  i = 0
+  for key, value in sorted(top_dict.items(), reverse = True):
+    print key, '>', value
+    i+=1
+    if i > top_limit:
+      break
+
 ###
 
 # This basic command line argument parsing code is provided and
