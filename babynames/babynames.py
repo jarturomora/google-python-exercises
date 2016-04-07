@@ -41,6 +41,14 @@ def extract_names(filename):
   ['2006', 'Aaliyah 91', Aaron 57', 'Abagail 895', ' ...]
   """
   # +++your code here+++
+  f = open(filename)
+  text_file = f.read()
+  # Extract the year
+  pattern = r'\d\d\d\d</h3>'
+  match = re.search(pattern, text_file)
+  the_year = match.group()[:4]
+  print the_year
+  sys.exit(0)
   return
 
 
@@ -63,6 +71,7 @@ def main():
   # +++your code here+++
   # For each filename, get the names, then either print the text output
   # or write it to a summary file
+  extract_names(args[0])
   
 if __name__ == '__main__':
   main()
