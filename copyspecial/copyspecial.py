@@ -24,8 +24,9 @@ def get_special_paths(dir):
   # Gell all the files with the patten "__foo__" in any part of the filename
   pattern = r'.*__.*__.*'
   special_files = re.findall(pattern, str(files))
-  print special_files
-  sys.exit(0)
+  for file in sorted(special_files):
+    print os.getcwd() + file
+  return
 
 def main():
   # This basic command line argument parsing code is provided.
