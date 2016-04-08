@@ -41,15 +41,24 @@ def extract_names(filename):
   ['2006', 'Aaliyah 91', Aaron 57', 'Abagail 895', ' ...]
   """
   # +++your code here+++
+  names_list = []
   f = open(filename)
   text_file = f.read()
   # Extract the year
   pattern = r'\d\d\d\d</h3>'
   match = re.search(pattern, text_file)
   the_year = match.group()[:4]
-  print the_year
-  sys.exit(0)
-  return
+  names_list.append(the_year)
+  # Extract table rows with names
+  pattern = r'td>(\d{1,4})</td><td>(\w*)</td><td>(\w*)'
+  match = re.findall(pattern, text_file)  
+  if match:
+    for m in match:
+      names_list.append(m[1] + ' ' + m[0])
+      names_list.append(m[2] + ' ' + m[0])
+  else:
+    print "not found"
+  return sorted(names_list)
 
 
 def main():
@@ -71,7 +80,8 @@ def main():
   # +++your code here+++
   # For each filename, get the names, then either print the text output
   # or write it to a summary file
-  extract_names(args[0])
+  baby_names = extract_names(args[0])
+  print '\n'.join(baby_names) + '\n'
   
 if __name__ == '__main__':
   main()
