@@ -45,7 +45,7 @@ def extract_names(filename):
   f = open(filename)
   text_file = f.read()
   # Extract the year
-  pattern = r'\d\d\d\d</h3>'
+  pattern = r'\d\d\d\d</h\d>'
   match = re.search(pattern, text_file)
   the_year = match.group()[:4]
   names_list.append(the_year)
@@ -79,9 +79,15 @@ def main():
 
   # +++your code here+++
   # For each filename, get the names, then either print the text output
-  # or write it to a summary file
-  baby_names = extract_names(args[0])
-  print '\n'.join(baby_names) + '\n'
+  # or write it to a summary file  
+  for arg in args:
+    baby_names = extract_names(arg)
+    if not summary:
+      print '\n'.join(baby_names) + '\n'
+    else:
+      f = open(arg + '.summary', 'w+')
+      f.write('\n'.join(baby_names) + '\n')
+      f.close()
   
 if __name__ == '__main__':
   main()
