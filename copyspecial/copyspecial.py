@@ -17,8 +17,15 @@ import commands
 
 # +++your code here+++
 # Write functions and modify main() to call them
-
-
+def get_special_paths(dir):
+  # Get all the files in the given dir
+  files = os.listdir(dir)
+  files = '\n '.join(files) + '\n'
+  # Gell all the files with the patten "__foo__" in any part of the filename
+  pattern = r'.*__.*__.*'
+  special_files = re.findall(pattern, str(files))
+  print special_files
+  sys.exit(0)
 
 def main():
   # This basic command line argument parsing code is provided.
@@ -50,6 +57,7 @@ def main():
 
   # +++your code here+++
   # Call your functions
+  get_special_paths(args[0])
   
 if __name__ == "__main__":
   main()
