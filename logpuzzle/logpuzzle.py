@@ -55,6 +55,10 @@ def download_images(img_urls, dest_dir):
     print "INFO: The '%s' directory didn't exist so it was created." % dest_dir
   # Download images
   i = 0
+  html_file = """<verbatim>
+<html>
+<body>
+  """
   print """
   **********************************************************
   We are going to start downloading the images of the puzzle
@@ -65,8 +69,14 @@ def download_images(img_urls, dest_dir):
     dest_image = dest_dir + '/img' + str(i) + '.jpg'
     urllib.urlretrieve(img, dest_image)
     print "    The image '%s' was successfully downloaded :-)\n" % img
-    i += 1
+    html_file += "<img src='" + 'img' + str(i) + ".jpg'>"
+    i += 1    
   print '\nINFO: All the images were successfully downloaded'
+  html_file += '\n</body>\n</html>'
+  index_html = open(dest_dir + '/index.html', 'w')
+  index_html.write(html_file)
+  index_html.close()
+  print 'INFO: The index.html file was created.'
   return
 
 def main():
