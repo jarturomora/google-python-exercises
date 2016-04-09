@@ -53,17 +53,33 @@ def copy_to(paths, dir):
   if not os.path.exists(dir):
     create_directory(dir)
   # Copy the files from the origin directory to the destination path.
-  #try:
-  special_files = get_special_paths(paths)
-  special_files = special_files.split('\n')
-  del special_files[-1]
-  for f in special_files:      
-    shutil.copy(f, dir)
-  print """
-        INFO: All the files in the directory '%s' were copied to '%s'
-        """ % (paths, dir)
-  #except:
-  #  print "Unexpected error:", sys.exc_info()[0]  
+  try:
+    special_files = get_special_paths(paths)
+    special_files = special_files.split('\n')
+    del special_files[-1]
+    for f in special_files:      
+      shutil.copy(f, dir)
+    print """
+          INFO: All the files in the directory '%s' were copied to '%s'
+          """ % (paths, dir)
+  except:
+    print "Unexpected error:", sys.exc_info()[0]  
+  return
+
+def zip_to(paths, zippath):
+  """Given a list of paths, zip those files up into the given zipfile."""
+  files = ' '.join(paths)
+  command = "zip -j %s %s" % (zippath, files)
+  print "Command I'm going to do: ", command
+  if os.path.exists(os.path.dirname(zippath)) or os.path.dirname(zippath) == '':    
+    (status, output) = commands.getstatusoutput(command)
+    if status:
+      print "Unexpected error: ", output
+    else:
+      print "zip result: ", output
+  else:
+    print "zip I/O error: No such file or directory"
+    print "zip error: Could not create output file (%s)" % zippath
   return
 
 def main():
@@ -98,6 +114,8 @@ def main():
   # Call your functions
   if todir != '':
     copy_to(args[0], todir)
+  elif tozip != '':
+    zip_to(args[0:], tozip)
   else:
     print get_special_paths(args[0])
   
