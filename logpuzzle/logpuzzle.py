@@ -10,6 +10,7 @@ import os
 import re
 import sys
 import urllib
+import collections
 
 """Logpuzzle exercise
 Given an apache logfile, find the puzzle urls and download the images.
@@ -25,19 +26,22 @@ def read_urls(filename):
   Screens out duplicate urls and returns the urls sorted into
   increasing order."""
   # +++your code here+++
-  # Define server name
+  # Define server name    
   server = 'http://' + filename.split('_')[1]
-  images_urls = []
+  images_urls = {}
 
   logfile = open(filename)
-  pattern = r'\.*"GET (\S*/puzzle\S*.jpg)'
+  pattern = r'\.*"GET (\S*/puzzle\S*)(-)(\S*.jpg)'  
   for logentry in logfile:
     image = re.search(pattern, logentry)
-    if image and server + image.group(1) not in images_urls:
-      images_urls.append(server + image.group(1))
-  logfile.close()
+    if image and server + image.group(3) not in images_urls.values():
+      img_url = server + image.group(1) + image.group(2) + image.group(3)      
+      images_urls[image.group(3)] = img_url
 
-  return sorted(images_urls)
+  logfile.close()
+  images_urls = collections.OrderedDict(sorted(images_urls.items())) 
+
+  return images_urls
 
 def download_images(img_urls, dest_dir):
   """Given the urls already in the correct order, downloads
@@ -64,13 +68,13 @@ def download_images(img_urls, dest_dir):
   We are going to start downloading the images of the puzzle
   **********************************************************
   """
-  for img in img_urls:
-    print 'Downloading image: ', img , '...'
-    dest_image = dest_dir + '/img' + str(i) + '.jpg'
-    urllib.urlretrieve(img, dest_image)
+  for img, url in img_urls.items():
+    print 'Downloading image: ', url , '...'
+    dest_image = dest_dir + '/img' + str(i) + '.jpg'    
+    urllib.urlretrieve(url, dest_image)
     print "    The image '%s' was successfully downloaded :-)\n" % img
     html_file += "<img src='" + 'img' + str(i) + ".jpg'>"
-    i += 1    
+    i += 1
   print '\nINFO: All the images were successfully downloaded'
   html_file += '\n</body>\n</html>'
   index_html = open(dest_dir + '/index.html', 'w')
@@ -96,7 +100,7 @@ def main():
   if todir:
     download_images(img_urls, todir)
   else:
-    print '\n'.join(img_urls)
+    print '\n'.join(img_urls.values())
 
 if __name__ == '__main__':
   main()
