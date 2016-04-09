@@ -25,7 +25,19 @@ def read_urls(filename):
   Screens out duplicate urls and returns the urls sorted into
   increasing order."""
   # +++your code here+++
-  
+  # Define server name
+  server = 'http://' + filename.split('_')[1]
+  images_urls = []
+
+  logfile = open(filename)
+  pattern = r'\.*"GET (\S*/puzzle\S*.jpg)'
+  for logentry in logfile:
+    image = re.search(pattern, logentry)
+    if image and server + image.group(1) not in images_urls:
+      images_urls.append(server + image.group(1))
+  logfile.close()
+
+  return sorted(images_urls)
 
 def download_images(img_urls, dest_dir):
   """Given the urls already in the correct order, downloads
