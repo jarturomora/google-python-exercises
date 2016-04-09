@@ -18,14 +18,52 @@ import commands
 # +++your code here+++
 # Write functions and modify main() to call them
 def get_special_paths(dir):
+  """Returns a list of the absolute paths of the special files in the given
+  directory. We'll say that a "special" file is one where the name contains
+  the pattern __w__ somewhere, where the w is one or more word chars."""
   # Get all the files in the given dir
   files = os.listdir(dir)
-  files = '\n '.join(files) + '\n'
+  files = '\n'.join(files) + '\n'
   # Gell all the files with the patten "__foo__" in any part of the filename
   pattern = r'.*__.*__.*'
   special_files = re.findall(pattern, str(files))
+  result = ''
   for file in sorted(special_files):
-    print os.getcwd() + file
+    result += os.path.abspath(file) + '\n'
+  return result
+
+def create_directory(dir):
+  """Creates the full path of a given directory"""
+  if not '/' in dir:
+      os.mkdir(dir)
+  else:
+    dirs = dir.split('/')
+    new_dir = ''
+    for d in dirs:
+      if d != '':
+        new_dir += d + '/'
+        os.mkdir(new_dir)
+  print "INFO: The Directory '%s' was successfully created." % dir
+  return
+
+def copy_to(paths, dir):
+  """Given a list of paths, copies all the special files into the given
+  directory."""
+  # Validate if the destination directory exists, if not we create it
+  if not os.path.exists(dir):
+    create_directory(dir)
+  # Copy the files from the origin directory to the destination path.
+  #try:
+  special_files = get_special_paths(paths)
+  special_files = special_files.split('\n')
+  del special_files[-1]
+  for f in special_files:      
+    shutil.copy(f, dir)
+  print """
+        INFO: All the files in the directory '%s' were copied to '%s'
+        """ % (paths, dir)
+  #except:
+  #  print "Unexpected error:", sys.exc_info()[0]  
   return
 
 def main():
@@ -58,7 +96,10 @@ def main():
 
   # +++your code here+++
   # Call your functions
-  get_special_paths(args[0])
+  if todir != '':
+    copy_to(args[0], todir)
+  else:
+    print get_special_paths(args[0])
   
 if __name__ == "__main__":
   main()
