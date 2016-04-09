@@ -48,7 +48,26 @@ def download_images(img_urls, dest_dir):
   Creates the directory if necessary.
   """
   # +++your code here+++
-  
+  # Verify if destination directory exists. We supose the directory is created
+  # in the same location where the script is run
+  if not os.path.exists(dest_dir):
+    os.mkdir(dest_dir)
+    print "INFO: The '%s' directory didn't exist so it was created." % dest_dir
+  # Download images
+  i = 0
+  print """
+  **********************************************************
+  We are going to start downloading the images of the puzzle
+  **********************************************************
+  """
+  for img in img_urls:
+    print 'Downloading image: ', img , '...'
+    dest_image = dest_dir + '/img' + str(i) + '.jpg'
+    urllib.urlretrieve(img, dest_image)
+    print "    The image '%s' was successfully downloaded :-)\n" % img
+    i += 1
+  print '\nINFO: All the images were successfully downloaded'
+  return
 
 def main():
   args = sys.argv[1:]
